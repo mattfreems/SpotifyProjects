@@ -89,8 +89,6 @@ def model_metrics(actual, pred):
 
 # Get all songs in the good and bad playlist and put their features into a pandas data frame
 # start only with the song features, could also add in the genre, artist info etc. later
-
-
 good_playlist_tracks = get_playlist_tracks('21du7dtyidfjcjba4c2jqlgca', '4G4esLd7cj3muK5LaAHvlm')
 bad_playlist_tracks = get_playlist_tracks('21du7dtyidfjcjba4c2jqlgca', '6d169744l7umlAG1skFH8D')
 
@@ -115,42 +113,52 @@ train_dislike = train[train['rate'] == 0]
 # plot the distribution for different features to show difference between liked songs and non liked songs
 plt.hist(train_like['danceability'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['danceability'], alpha = 0.4, density = True, color = 'red')
+plt.title('Danceability')
 plt.show()
 
 plt.hist(train_like['energy'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['energy'], alpha = 0.4, density = True, color = 'red')
+plt.title('Energy')
 plt.show()
 
 plt.hist(train_like['liveness'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['liveness'], alpha = 0.4, density = True, color = 'red')
+plt.title('Liveness')
 plt.show()
 
 plt.hist(train_like['tempo'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['tempo'], alpha = 0.4, density = True, color = 'red')
+plt.title('Tempo')
 plt.show()
 
 plt.hist(train_like['speechiness'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['speechiness'], alpha = 0.4, density = True, color = 'red')
+plt.title('Speechiness')
 plt.show()
 
 plt.hist(train_like['acousticness'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['acousticness'], alpha = 0.4, density = True, color = 'red')
+plt.title('Acousticness')
 plt.show()
 
 plt.hist(train_like['instrumentalness'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['instrumentalness'], alpha = 0.4, density = True, color = 'red')
+plt.title('Instrumentalness')
 plt.show()
 
 plt.hist(train_like['duration_ms'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['duration_ms'], alpha = 0.4, density = True, color = 'red')
+plt.title('Duration')
 plt.show()
 
 plt.hist(train_like['loudness'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['loudness'], alpha = 0.4, density = True, color = 'red')
+plt.title('Loudness')
 plt.show()
 
 plt.hist(train_like['valence'], alpha = 0.4, density = True, color = 'green')
 plt.hist(train_dislike['valence'], alpha = 0.4, density = True, color = 'red')
+plt.title('Valence')
 plt.show()
 
 ############################################################################################################
