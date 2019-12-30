@@ -3,51 +3,47 @@ import spotipy.util as util
 import random
 import pandas as pd
 
-# CREATES A RANDOM PLAYLIST OUT OF THREE SPECIFIED ARTISTS BY THE USER
+# A SCRIPT THAT CREATES A RANDOM PLAYLIST OUT OF ARTISTS SPECIFIED BY THE USER AND ADDS IT TO SPOTIFY
 
-client_id = '' # TODO: enter client id here
-client_secret = '' # # TODO: enter client secret here
+client_id = ''  # TODO: Add your client ID here
+client_secret = ''  # TODO: Add your client secret here
 redirect_url = 'http://localhost/'
 
-username = '' # TODO: enter you Spotify URI username here
+username = ''  # TODO: enter you Spotify URI username here
 scope = 'playlist-modify-private, playlist-modify-public'
-token = util.prompt_for_user_token(username, scope, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url)
+token = util.prompt_for_user_token(username, scope, client_id=client_id,
+                                   client_secret=client_secret, redirect_uri=redirect_url)
 sp = spotipy.Spotify(auth=token)
 
 print()
 print("Hello and welcome to this custom playlist creator!")
 print()
-print("Can you enter three different artists that you would like to be on the playlist?")
+artist_number = int(input("Please enter the number of artists you want on the playlist: "))
 print()
-search1 = input("Who is the first artist you would like to be on the list?")
-art1results = sp.search(search1,1,0,'artist')
-artist1 = art1results['artists']['items'][0]
 
-search2 = input("Who is the second artist you would like to be on the list?")
-art2results = sp.search(search2,1,0,'artist')
-artist2 = art2results['artists']['items'][0]
-
-search3 = input("Who is the third artist you would like to be on the list?")
-art3results = sp.search(search3,1,0,'artist')
-artist3 = art3results['artists']['items'][0]
+# List of Artists and their names based on input
+ArtistList = []
+ArtistNames = []
+for i in range(artist_number):
+    search = input("Who is artist number " + str(i+1) + "?")
+    artist_info = sp.search(search, 1, 0, 'artist')['artists']['items'][0]
+    ArtistList.append(artist_info)
+    ArtistNames.append(artist_info['name'])
 
 print()
-print("Brilliant! So the three artists you have chosen are: " + artist1["name"] + ", " + artist2["name"] + ", " + artist3["name"])
+print("Brilliant! So the artists you have chosen are: ", ', '.join(ArtistNames))
 
 # Input number of songs wanted on the playlist
 print()
 songnum = int(input("Now, how many songs do you want on the playlist?"))
 print()
 
-#List of artist objects
-ArtistList = [artist1, artist2, artist3]
-print("ArtistListDone")
 
-#figure out split of number of songs per artist
-remainder = songnum % 3
-integer = int(songnum/3)
+# figure out split of number of songs per artist
+remainder = songnum % artist_number
+integer = int(songnum/artist_number)
 splits = []
-for i in range(3):
+for i in range(artist_number):
     splits.append(integer)
 for i in range(remainder):
     splits[i] += 1
@@ -56,7 +52,6 @@ for i in range(remainder):
 playlist_tracks = []
 s = 0
 for artist in ArtistList:
-    print("Artist ", s)
 
     # get all the albums from artist 1
     sp_albums = sp.artist_albums(artist['id'], album_type='album')
@@ -88,10 +83,10 @@ for artist in ArtistList:
             tracks.append(song_info)
 
     # create data frame with the track info list and sort by popularity
-    artist_tracks = pd.DataFrame(tracks).sort_values(by='popularity',ascending=False)
+    artist_tracks = pd.DataFrame(tracks).sort_values(by='popularity', ascending=False)
 
     # pick a proportion of the top 20 songs of the artist based on artists popularity
-    thresh = round(0.2 * int(artist['popularity']))
+    thresh = 20
 
     # create a list of the tracks and then add a random "split" number of the "thresh" top tracks to the playlist list
     ids = artist_tracks['id'].to_list()
@@ -99,7 +94,7 @@ for artist in ArtistList:
     s += 1
 
 # create the playlist and then save the id of the new playlist
-sp.user_playlist_create(username, 'Random ' + artist1['name'] + ', ' + artist2['name'] + ', and ' + artist3['name'] + ' songs')
+sp.user_playlist_create(username, 'Random ' + ', '.join(ArtistNames) + ' songs')
 new_playlist = sp.user_playlists(username)['items'][0]['id']
 random.shuffle(playlist_tracks)
 
@@ -107,3 +102,5 @@ random.shuffle(playlist_tracks)
 # add each of the tracks to the playlist
 for i in playlist_tracks:
     sp.user_playlist_add_tracks(username, new_playlist, [i])
+
+print("There you go! Now check your Spotify to see the playlist!")
